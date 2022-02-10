@@ -1,20 +1,47 @@
 import { useEffect, useState } from "react";
-function Hello() {
-  useEffect(() => {
-    console.log("created :D");
-    return () => console.log("destroyed :(");
-  }, []);
-  return <h1>Hello</h1>;
-}
+
 function App() {
-  const [showing, setShowing] = useState(false);
-  const onClick = () => {
-    setShowing((prev) => !prev);
+  const [toDo, setToDo] = useState("");
+  const [toDoList, setToDoList] = useState([]);
+  const onChange = (event) => setToDo(event.target.value);
+  const delBtn = (event) => {
+    setToDoList((currentArray) =>
+      currentArray.filter((its) => {
+        return its !== event.target.id;
+      })
+    );
   };
+  const onSubmit = (event) => {
+    event.preventDefault();
+    if (toDo === "") {
+      return;
+    }
+    setToDoList((currentArray) => [toDo, ...currentArray]);
+    setToDo("");
+  };
+
   return (
     <div>
-      {showing ? <Hello /> : null}
-      <button onClick={onClick}>{showing ? "hide" : "show"}</button>
+      <h1>To Do List ({toDoList.length})</h1>
+      <form onSubmit={onSubmit}>
+        <input
+          value={toDo}
+          onChange={onChange}
+          type="text"
+          placeholder="write your to do"
+        ></input>
+        <button>Add To Do</button>
+      </form>
+      <ul>
+        {toDoList.map((item, index) => (
+          <li key={index}>
+            {item}
+            <button id={item} onClick={delBtn}>
+              [del]
+            </button>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
